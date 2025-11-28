@@ -26,7 +26,7 @@ interface InternalRedisOptions {
 
 interface InternalOptions {
   redis: InternalRedisOptions;
-  http?: TriperoHttpOptions;
+  http: TriperoHttpOptions;
   options: {
     enableRetry: boolean;
     enableOfflineQueue: boolean;
@@ -57,7 +57,8 @@ type EventHandlers = Map<TriperoEventType, Set<AnyHandler>>;
  * @example
  * ```typescript
  * const tripero = new TriperoClient({
- *   redis: { host: 'redis-tripero-service', port: 6379 }
+ *   redis: { host: 'redis-tripero-service', port: 6379 },
+ *   http: { baseUrl: 'http://tripero-service:3001' }
  * });
  *
  * await tripero.connect();
@@ -122,10 +123,8 @@ export class TriperoClient {
       this.options.options.logger ??
       new DefaultLogger(this.options.options.logLevel);
 
-    // Inicializar cliente HTTP si se proporcionó configuración
-    if (this.options.http) {
-      this.httpClient = new TriperoHttpClient(this.options.http, this.logger);
-    }
+    // Inicializar cliente HTTP
+    this.httpClient = new TriperoHttpClient(this.options.http, this.logger);
   }
 
   /**

@@ -10,10 +10,10 @@ export interface TriperoClientOptions {
   redis: TriperoRedisOptions;
 
   /**
-   * Configuración de la API HTTP de Tripero (opcional)
-   * Necesario para: consultar status, configurar odómetro, obtener reportes
+   * Configuración de la API HTTP de Tripero
+   * Requerido para: consultar status, configurar odómetro, obtener reportes
    */
-  http?: TriperoHttpOptions;
+  http: TriperoHttpOptions;
 
   /**
    * Opciones adicionales del cliente

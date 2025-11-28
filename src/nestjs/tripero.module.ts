@@ -58,6 +58,7 @@ export class TriperoService extends TriperoClient implements OnModuleDestroy {
  *   imports: [
  *     TriperoModule.forRoot({
  *       redis: { host: 'redis-tripero-service', port: 6379 },
+ *       http: { baseUrl: 'http://tripero-service:3001' },
  *       options: { throwOnError: false }
  *     })
  *   ]
@@ -76,6 +77,9 @@ export class TriperoService extends TriperoClient implements OnModuleDestroy {
  *         redis: {
  *           host: config.get('TRIPERO_REDIS_HOST'),
  *           port: config.get('TRIPERO_REDIS_PORT'),
+ *         },
+ *         http: {
+ *           baseUrl: config.get('TRIPERO_HTTP_URL'),
  *         }
  *       })
  *     })
