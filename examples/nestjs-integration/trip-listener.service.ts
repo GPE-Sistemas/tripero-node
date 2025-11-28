@@ -5,14 +5,14 @@
  */
 
 import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { TriperoService } from 'tripero-node/nestjs';
+import { TriperoService } from '@gpe-sistemas/tripero-node/nestjs';
 import type {
   TripStartedEvent,
   TripCompletedEvent,
   StopStartedEvent,
   StopCompletedEvent,
   TrackerStateChangedEvent,
-} from 'tripero-node';
+} from '@gpe-sistemas/tripero-node';
 
 @Injectable()
 export class TripListenerService implements OnModuleInit, OnModuleDestroy {

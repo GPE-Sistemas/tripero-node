@@ -7,7 +7,7 @@
  * - Configure odometer
  */
 
-import { TriperoClient } from 'tripero-node';
+import { TriperoClient } from '@gpe-sistemas/tripero-node';
 
 async function main() {
   // Create client with both Redis and HTTP configuration

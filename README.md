@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/tripero-node"><img src="https://img.shields.io/npm/v/tripero-node.svg" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/tripero-node"><img src="https://img.shields.io/npm/dm/tripero-node.svg" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/@gpe-sistemas/tripero-node"><img src="https://img.shields.io/npm/v/@gpe-sistemas/tripero-node.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@gpe-sistemas/tripero-node"><img src="https://img.shields.io/npm/dm/@gpe-sistemas/tripero-node.svg" alt="npm downloads"></a>
   <a href="https://github.com/GPE-Sistemas/tripero-node/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.0-blue.svg" alt="TypeScript"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js"></a>
@@ -55,13 +55,13 @@
 
 ```bash
 # npm
-npm install tripero-node
+npm install @gpe-sistemas/tripero-node
 
 # yarn
-yarn add tripero-node
+yarn add @gpe-sistemas/tripero-node
 
 # pnpm
-pnpm add tripero-node
+pnpm add @gpe-sistemas/tripero-node
 ```
 
 ### Peer Dependencies
@@ -76,7 +76,7 @@ npm install @nestjs/common @nestjs/core
 ### Basic Usage (Node.js)
 
 ```typescript
-import { TriperoClient } from 'tripero-node';
+import { TriperoClient } from '@gpe-sistemas/tripero-node';
 
 // Create client
 const tripero = new TriperoClient({
@@ -322,7 +322,7 @@ Query historical stops with the same options as `getTrips()`.
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { TriperoModule } from 'tripero-node/nestjs';
+import { TriperoModule } from '@gpe-sistemas/tripero-node/nestjs';
 
 @Module({
   imports: [
@@ -347,7 +347,7 @@ export class AppModule {}
 // app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TriperoModule } from 'tripero-node/nestjs';
+import { TriperoModule } from '@gpe-sistemas/tripero-node/nestjs';
 
 @Module({
   imports: [
@@ -376,7 +376,7 @@ export class AppModule {}
 ```typescript
 // position.service.ts
 import { Injectable } from '@nestjs/common';
-import { TriperoService } from 'tripero-node/nestjs';
+import { TriperoService } from '@gpe-sistemas/tripero-node/nestjs';
 
 @Injectable()
 export class PositionService {
@@ -407,8 +407,8 @@ export class PositionService {
 ```typescript
 // trip-listener.service.ts
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { TriperoService } from 'tripero-node/nestjs';
-import type { TripStartedEvent, TripCompletedEvent } from 'tripero-node';
+import { TriperoService } from '@gpe-sistemas/tripero-node/nestjs';
+import type { TripStartedEvent, TripCompletedEvent } from '@gpe-sistemas/tripero-node';
 
 @Injectable()
 export class TripListenerService implements OnModuleInit {
@@ -542,7 +542,7 @@ const tripero = new TriperoClient({
 ### Custom Logger
 
 ```typescript
-import { TriperoClient, TriperoLogger } from 'tripero-node';
+import { TriperoClient, TriperoLogger } from '@gpe-sistemas/tripero-node';
 
 const customLogger: TriperoLogger = {
   debug: (msg, ...args) => myLogger.debug(msg, ...args),

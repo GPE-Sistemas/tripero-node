@@ -7,7 +7,7 @@
  * - Subscribe to trip events
  */
 
-import { TriperoClient } from 'tripero-node';
+import { TriperoClient } from '@gpe-sistemas/tripero-node';
 
 async function main() {
   // Create client with Redis configuration

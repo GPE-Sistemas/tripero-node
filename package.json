@@ -1,9 +1,12 @@
 {
-  "name": "tripero-node",
+  "name": "@gpe-sistemas/tripero-node",
   "version": "0.1.0",
   "description": "Node.js/TypeScript SDK for Tripero GPS trip detection service",
   "author": "GPE Sistemas",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

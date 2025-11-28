@@ -5,7 +5,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { TriperoService } from 'tripero-node/nestjs';
+import { TriperoService } from '@gpe-sistemas/tripero-node/nestjs';
 
 interface GpsData {
   imei: string;

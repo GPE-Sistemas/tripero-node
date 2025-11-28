@@ -6,7 +6,7 @@
 
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TriperoModule } from 'tripero-node/nestjs';
+import { TriperoModule } from '@gpe-sistemas/tripero-node/nestjs';
 import { PositionService } from './position.service';
 import { TripListenerService } from './trip-listener.service';
 
