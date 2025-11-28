@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/GPE-Sistemas/tripero-node/main/docs/logo.png" width="200" alt="Tripero Node Logo" />
+  <img src="https://storage.googleapis.com/assets-generales/tripero-node-beta.png" width="200" alt="Tripero Node Logo" />
 </p>
 
 <h1 align="center">tripero-node</h1>
