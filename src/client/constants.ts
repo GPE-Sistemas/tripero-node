@@ -1,3 +1,5 @@
+import type { LogLevel } from '../interfaces';
+
 /**
  * Canales Redis de Tripero
  * Basado en Tripero v0.4.1
@@ -39,13 +41,26 @@ export const ALL_OUTPUT_CHANNELS = Object.values(OUTPUT_CHANNELS);
 /**
  * Valores por defecto de configuración
  */
-export const DEFAULTS = {
+export const DEFAULTS: {
+  REDIS_HOST: string;
+  REDIS_PORT: number;
+  REDIS_DB: number;
+  REDIS_KEY_PREFIX: string;
+  HTTP_TIMEOUT: number;
+  LOG_LEVEL: LogLevel;
+  ENABLE_RETRY: boolean;
+  ENABLE_OFFLINE_QUEUE: boolean;
+  THROW_ON_ERROR: boolean;
+  MAX_RETRIES_PER_REQUEST: number;
+} = {
   REDIS_HOST: 'localhost',
   REDIS_PORT: 6379,
   REDIS_DB: 0,
+  REDIS_KEY_PREFIX: 'tripero:', // Mismo default que Tripero servidor
+  HTTP_TIMEOUT: 10000,
   LOG_LEVEL: 'info',
   ENABLE_RETRY: false,
   ENABLE_OFFLINE_QUEUE: false,
   THROW_ON_ERROR: false,
   MAX_RETRIES_PER_REQUEST: 1,
-} as const;
+};

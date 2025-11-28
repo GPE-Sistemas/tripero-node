@@ -10,6 +10,12 @@ export interface TriperoClientOptions {
   redis: TriperoRedisOptions;
 
   /**
+   * Configuración de la API HTTP de Tripero (opcional)
+   * Necesario para: consultar status, configurar odómetro, obtener reportes
+   */
+  http?: TriperoHttpOptions;
+
+  /**
    * Opciones adicionales del cliente
    */
   options?: TriperoOptions;
@@ -50,7 +56,7 @@ export interface TriperoRedisOptions {
   /**
    * Prefijo para keys y canales Redis
    * Permite compartir un Redis con otras aplicaciones
-   * @default '' (sin prefijo)
+   * @default 'tripero:' (igual que Tripero servidor)
    */
   keyPrefix?: string;
 
@@ -58,6 +64,28 @@ export interface TriperoRedisOptions {
    * Opciones adicionales de ioredis
    */
   redisOptions?: Partial<RedisOptions>;
+}
+
+/**
+ * Opciones de conexión HTTP a la API de Tripero
+ */
+export interface TriperoHttpOptions {
+  /**
+   * URL base de la API de Tripero
+   * @example 'http://tripero-service:3001'
+   */
+  baseUrl: string;
+
+  /**
+   * Timeout para requests HTTP en milisegundos
+   * @default 10000
+   */
+  timeout?: number;
+
+  /**
+   * Headers adicionales para requests HTTP
+   */
+  headers?: Record<string, string>;
 }
 
 /**

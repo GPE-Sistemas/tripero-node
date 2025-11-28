@@ -1,14 +1,51 @@
 import Redis from 'ioredis';
 import type {
   TriperoClientOptions,
+  TriperoRedisOptions,
+  TriperoHttpOptions,
   TriperoLogger,
+  LogLevel,
   PositionEvent,
   IgnitionEvent,
   TriperoEventType,
   TriperoEventHandler,
 } from '../interfaces';
+
+/**
+ * Opciones internas del cliente con valores requeridos
+ */
+interface InternalRedisOptions {
+  host: string;
+  port: number;
+  db: number;
+  password?: string;
+  username?: string;
+  keyPrefix: string;
+  redisOptions?: TriperoRedisOptions['redisOptions'];
+}
+
+interface InternalOptions {
+  redis: InternalRedisOptions;
+  http?: TriperoHttpOptions;
+  options: {
+    enableRetry: boolean;
+    enableOfflineQueue: boolean;
+    throwOnError: boolean;
+    logLevel: LogLevel;
+    maxRetriesPerRequest: number;
+    logger?: TriperoLogger;
+  };
+}
 import { DefaultLogger } from './logger';
 import { DEFAULTS, INPUT_CHANNELS } from './constants';
+import {
+  TriperoHttpClient,
+  type TrackerStatusResponse,
+  type OdometerSetResponse,
+  type TripReport,
+  type StopReport,
+  type ReportQueryOptions,
+} from './TriperoHttpClient';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyHandler = (event: any) => void | Promise<void>;
@@ -45,7 +82,8 @@ type EventHandlers = Map<TriperoEventType, Set<AnyHandler>>;
 export class TriperoClient {
   private publisher: Redis | null = null;
   private subscriber: Redis | null = null;
-  private readonly options: Required<TriperoClientOptions>;
+  private httpClient: TriperoHttpClient | null = null;
+  private readonly options: InternalOptions;
   private readonly logger: TriperoLogger;
   private readonly keyPrefix: string;
   private readonly handlers: EventHandlers = new Map();
@@ -61,9 +99,10 @@ export class TriperoClient {
         db: options.redis.db ?? DEFAULTS.REDIS_DB,
         password: options.redis.password,
         username: options.redis.username,
-        keyPrefix: options.redis.keyPrefix ?? '',
+        keyPrefix: options.redis.keyPrefix ?? DEFAULTS.REDIS_KEY_PREFIX,
         redisOptions: options.redis.redisOptions,
       },
+      http: options.http,
       options: {
         enableRetry: options.options?.enableRetry ?? DEFAULTS.ENABLE_RETRY,
         enableOfflineQueue:
@@ -78,10 +117,15 @@ export class TriperoClient {
       },
     };
 
-    this.keyPrefix = this.options.redis.keyPrefix ?? '';
+    this.keyPrefix = this.options.redis.keyPrefix ?? DEFAULTS.REDIS_KEY_PREFIX;
     this.logger =
       this.options.options.logger ??
       new DefaultLogger(this.options.options.logLevel);
+
+    // Inicializar cliente HTTP si se proporcionó configuración
+    if (this.options.http) {
+      this.httpClient = new TriperoHttpClient(this.options.http, this.logger);
+    }
   }
 
   /**
@@ -308,6 +352,81 @@ export class TriperoClient {
       await this.subscriber.unsubscribe();
       this.isSubscribed = false;
       this.logger.info('Desuscrito de todos los canales');
+    }
+  }
+
+  // ============================================================================
+  // API HTTP (requiere configuración http)
+  // ============================================================================
+
+  /**
+   * Verifica si el cliente HTTP está disponible
+   */
+  get hasHttpClient(): boolean {
+    return this.httpClient !== null;
+  }
+
+  /**
+   * Obtiene el estado actual de un tracker
+   * Requiere configuración http
+   */
+  async getTrackerStatus(trackerId: string): Promise<TrackerStatusResponse> {
+    this.ensureHttpClient();
+    return this.httpClient!.getTrackerStatus(trackerId);
+  }
+
+  /**
+   * Configura el odómetro inicial de un tracker
+   * Requiere configuración http
+   * @param trackerId ID del tracker
+   * @param initialOdometer Odómetro inicial en metros
+   * @param reason Razón del ajuste (opcional)
+   */
+  async setOdometer(
+    trackerId: string,
+    initialOdometer: number,
+    reason?: string,
+  ): Promise<OdometerSetResponse> {
+    this.ensureHttpClient();
+    return this.httpClient!.setOdometer(trackerId, initialOdometer, reason);
+  }
+
+  /**
+   * Obtiene reportes de trips
+   * Requiere configuración http
+   */
+  async getTrips(options: ReportQueryOptions): Promise<TripReport[]> {
+    this.ensureHttpClient();
+    return this.httpClient!.getTrips(options);
+  }
+
+  /**
+   * Obtiene reportes de stops
+   * Requiere configuración http
+   */
+  async getStops(options: ReportQueryOptions): Promise<StopReport[]> {
+    this.ensureHttpClient();
+    return this.httpClient!.getStops(options);
+  }
+
+  /**
+   * Verifica la salud de Tripero vía HTTP
+   * Requiere configuración http
+   */
+  async healthHttp(): Promise<{
+    status: string;
+    timestamp: string;
+    services: Record<string, { status: string }>;
+  }> {
+    this.ensureHttpClient();
+    return this.httpClient!.health();
+  }
+
+  private ensureHttpClient(): void {
+    if (!this.httpClient) {
+      throw new Error(
+        'HTTP client not configured. Provide http.baseUrl in TriperoClientOptions.',
+      );
     }
   }
 

@@ -15,11 +15,22 @@ export {
   DEFAULTS,
 } from './client/constants';
 
+// Cliente HTTP
+export {
+  TriperoHttpClient,
+  type TrackerStatusResponse,
+  type OdometerSetResponse,
+  type TripReport,
+  type StopReport,
+  type ReportQueryOptions,
+} from './client/TriperoHttpClient';
+
 // Interfaces y tipos
 export type {
   // Configuración
   TriperoClientOptions,
   TriperoRedisOptions,
+  TriperoHttpOptions,
   TriperoOptions,
   TriperoLogger,
   LogLevel,
