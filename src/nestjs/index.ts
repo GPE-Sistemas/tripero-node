@@ -1,11 +1,15 @@
+// Módulo NestJS
 export {
   TriperoModule,
-  TriperoService,
   TriperoModuleAsyncOptions,
   TRIPERO_OPTIONS,
   TRIPERO_CLIENT,
 } from './tripero.module';
 
+// Re-exportar TriperoClient para conveniencia
+export { TriperoClient } from '../client/TriperoClient';
+
+// Decoradores para suscripción a eventos
 export {
   OnTripStarted,
   OnTripCompleted,

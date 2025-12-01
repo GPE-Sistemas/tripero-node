@@ -1,9 +1,17 @@
 import type { DynamicModule, Provider, OnModuleDestroy } from '@nestjs/common';
-import { Module, Global, Inject, Injectable } from '@nestjs/common';
+import { Module, Global, Inject } from '@nestjs/common';
 import { TriperoClient } from '../client/TriperoClient';
 import type { TriperoClientOptions } from '../interfaces';
 
 export const TRIPERO_OPTIONS = Symbol('TRIPERO_OPTIONS');
+
+/**
+ * Token de inyección para TriperoClient
+ * @example
+ * ```typescript
+ * constructor(@Inject(TRIPERO_CLIENT) private tripero: TriperoClient) {}
+ * ```
+ */
 export const TRIPERO_CLIENT = Symbol('TRIPERO_CLIENT');
 
 /**
@@ -18,42 +26,26 @@ export interface TriperoModuleAsyncOptions {
 }
 
 /**
- * Servicio inyectable de Tripero para NestJS
- *
- * @example
- * ```typescript
- * @Injectable()
- * export class PositionService {
- *   constructor(private readonly tripero: TriperoService) {}
- *
- *   async handleGpsData(data: any) {
- *     await this.tripero.publishPosition({
- *       deviceId: data.imei,
- *       timestamp: Date.now(),
- *       latitude: data.lat,
- *       longitude: data.lon,
- *       speed: data.speed
- *     });
- *   }
- * }
- * ```
+ * Wrapper interno para manejar lifecycle del cliente
+ * @internal
  */
-@Injectable()
-export class TriperoService extends TriperoClient implements OnModuleDestroy {
-  constructor(@Inject(TRIPERO_OPTIONS) options: TriperoClientOptions) {
-    super(options);
-  }
+class TriperoClientWrapper implements OnModuleDestroy {
+  constructor(public readonly client: TriperoClient) {}
 
   async onModuleDestroy(): Promise<void> {
-    await this.disconnect();
+    await this.client.disconnect();
   }
 }
 
 /**
  * Módulo NestJS para Tripero
  *
+ * Provee TriperoClient como inyectable usando el token TRIPERO_CLIENT.
+ *
  * @example Configuración estática
  * ```typescript
+ * import { TriperoModule, TRIPERO_CLIENT, TriperoClient } from '@gpe-sistemas/tripero-node/nestjs';
+ *
  * @Module({
  *   imports: [
  *     TriperoModule.forRoot({
@@ -64,6 +56,16 @@ export class TriperoService extends TriperoClient implements OnModuleDestroy {
  *   ]
  * })
  * export class AppModule {}
+ *
+ * // En tu servicio:
+ * @Injectable()
+ * export class MyService {
+ *   constructor(@Inject(TRIPERO_CLIENT) private tripero: TriperoClient) {}
+ *
+ *   async getTrips() {
+ *     return this.tripero.getTrips({ deviceId: 'xxx', from: '...', to: '...' });
+ *   }
+ * }
  * ```
  *
  * @example Configuración asíncrona con ConfigService
@@ -100,20 +102,26 @@ export class TriperoModule {
       useValue: options,
     };
 
-    const clientProvider: Provider = {
-      provide: TriperoService,
+    const wrapperProvider: Provider = {
+      provide: TriperoClientWrapper,
       useFactory: async (opts: TriperoClientOptions) => {
-        const service = new TriperoService(opts);
-        await service.connect();
-        return service;
+        const client = new TriperoClient(opts);
+        await client.connect();
+        return new TriperoClientWrapper(client);
       },
       inject: [TRIPERO_OPTIONS],
     };
 
+    const clientProvider: Provider = {
+      provide: TRIPERO_CLIENT,
+      useFactory: (wrapper: TriperoClientWrapper) => wrapper.client,
+      inject: [TriperoClientWrapper],
+    };
+
     return {
       module: TriperoModule,
-      providers: [optionsProvider, clientProvider],
-      exports: [TriperoService],
+      providers: [optionsProvider, wrapperProvider, clientProvider],
+      exports: [TRIPERO_CLIENT],
     };
   }
 
@@ -127,21 +135,27 @@ export class TriperoModule {
       inject: asyncOptions.inject || [],
     };
 
-    const clientProvider: Provider = {
-      provide: TriperoService,
+    const wrapperProvider: Provider = {
+      provide: TriperoClientWrapper,
       useFactory: async (opts: TriperoClientOptions) => {
-        const service = new TriperoService(opts);
-        await service.connect();
-        return service;
+        const client = new TriperoClient(opts);
+        await client.connect();
+        return new TriperoClientWrapper(client);
       },
       inject: [TRIPERO_OPTIONS],
+    };
+
+    const clientProvider: Provider = {
+      provide: TRIPERO_CLIENT,
+      useFactory: (wrapper: TriperoClientWrapper) => wrapper.client,
+      inject: [TriperoClientWrapper],
     };
 
     return {
       module: TriperoModule,
       imports: asyncOptions.imports || [],
-      providers: [optionsProvider, clientProvider],
-      exports: [TriperoService],
+      providers: [optionsProvider, wrapperProvider, clientProvider],
+      exports: [TRIPERO_CLIENT],
     };
   }
 }
