@@ -54,6 +54,27 @@ export interface TrackerStatusResponse {
       status: 'online' | 'offline' | 'stale';
       lastSeenAgo: number;
     };
+    /**
+     * Diagnóstico de conexión eléctrica del tracker (v0.4.2+)
+     * Inferido del análisis de gaps nocturnos
+     */
+    powerDiagnostic?: {
+      /**
+       * Tipo de conexión eléctrica inferido:
+       * - 'permanent': Conectado a BAT+ (siempre con energía)
+       * - 'switched': Conectado a ACC/contacto (pierde energía al apagar)
+       * - 'unknown': Sin datos suficientes para determinar
+       */
+      powerType: 'permanent' | 'switched' | 'unknown';
+      /** Cantidad de gaps nocturnos (>2h) detectados */
+      overnightGapCount: number;
+      /** Fecha del último gap nocturno detectado */
+      lastOvernightGapAt?: string;
+      /** true si se detectó conexión switched - puede requerir atención */
+      hasPowerIssue: boolean;
+      /** Recomendación de acción si hay problema */
+      recommendation?: string;
+    };
   };
 }
 

@@ -1,6 +1,6 @@
 /**
  * Interfaces para eventos publicados y recibidos de Tripero
- * Basado en Tripero v0.4.1
+ * Basado en Tripero v0.4.2
  */
 
 // ============================================================================
@@ -183,6 +183,7 @@ export interface StopStartedEvent {
   reason: StopReason;
   currentState: 'IDLE';
   odometer: number; // meters
+  metadata?: PositionMetadata;
 }
 
 /**
@@ -200,6 +201,7 @@ export interface StopCompletedEvent {
   reason: StopReason;
   currentState: TripState;
   odometer: number; // meters
+  metadata?: PositionMetadata;
 }
 
 /**

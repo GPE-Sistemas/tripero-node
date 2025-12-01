@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-12-01
+
+### Added
+
+- **Power Diagnostic** - New `powerDiagnostic` field in `TrackerStatusResponse`
+  - `powerType`: Connection type (`'permanent'` | `'switched'` | `'unknown'`)
+  - `overnightGapCount`: Number of overnight gaps detected
+  - `lastOvernightGapAt`: Last overnight gap timestamp
+  - `hasPowerIssue`: Flag indicating potential power issues
+  - `recommendation`: Action recommendation if issue detected
+
+- **Event Metadata** - Added `metadata` field to stop events
+  - `StopStartedEvent.metadata`
+  - `StopCompletedEvent.metadata`
+
+### Changed
+
+- Updated to Tripero v0.4.2 compatibility
+
+### Power Type Values
+
+| Value | Description |
+|-------|-------------|
+| `permanent` | Connected to BAT+ (always powered, no overnight gaps) |
+| `switched` | Connected to ACC/ignition (loses power when vehicle off) |
+| `unknown` | Not enough data to determine |
+
+## [0.2.0] - 2024-11-28
+
+### Added
+
+- Metadata support for position events (`tenant_id`, `client_id`, `fleet_id`)
+- Metadata propagation to trips and stops
+
 ## [0.1.0] - 2024-11-28
 
 ### Added
@@ -51,5 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tripero v0.4.0+
 - NestJS 10+ (optional)
 
-[Unreleased]: https://github.com/GPE-Sistemas/tripero-node/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/GPE-Sistemas/tripero-node/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/GPE-Sistemas/tripero-node/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/GPE-Sistemas/tripero-node/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/GPE-Sistemas/tripero-node/releases/tag/v0.1.0
