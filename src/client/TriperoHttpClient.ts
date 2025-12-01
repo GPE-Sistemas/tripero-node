@@ -133,6 +133,8 @@ export interface StopReport {
   longitude: number;
   address: string | null;
   engineHours: number | null;
+  startOdometer?: number;
+  endOdometer?: number;
 }
 
 /**
