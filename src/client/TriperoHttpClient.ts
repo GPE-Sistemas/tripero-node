@@ -38,6 +38,8 @@ export interface TrackerStatusResponse {
       avgSpeed: number;
       maxSpeed: number;
       odometerAtStart: number;
+      startLat: number;
+      startLon: number;
     };
     statistics: {
       totalTrips: number;
