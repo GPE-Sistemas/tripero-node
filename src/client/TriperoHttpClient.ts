@@ -81,6 +81,18 @@ export interface TrackerStatusResponse {
 }
 
 /**
+ * Respuesta de status de múltiples trackers (bulk)
+ */
+export interface BulkTrackerStatusResponse {
+  success: boolean;
+  data: Array<TrackerStatusResponse['data'] & { trackerId: string }>;
+  errors?: Array<{
+    trackerId: string;
+    error: string;
+  }>;
+}
+
+/**
  * Respuesta de configuración de odómetro
  */
 export interface OdometerSetResponse {
@@ -177,6 +189,14 @@ export class TriperoHttpClient {
   async getTrackerStatus(trackerId: string): Promise<TrackerStatusResponse> {
     const url = `${this.baseUrl}/trackers/${encodeURIComponent(trackerId)}/status`;
     return this.request<TrackerStatusResponse>('GET', url);
+  }
+
+  /**
+   * Obtiene el estado actual de múltiples trackers en una sola request
+   */
+  async getBulkTrackerStatus(trackerIds: string[]): Promise<BulkTrackerStatusResponse> {
+    const url = `${this.baseUrl}/trackers/status/bulk`;
+    return this.request<BulkTrackerStatusResponse>('POST', url, { trackerIds });
   }
 
   /**

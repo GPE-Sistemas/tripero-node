@@ -41,6 +41,7 @@ import { DEFAULTS, INPUT_CHANNELS } from './constants';
 import {
   TriperoHttpClient,
   type TrackerStatusResponse,
+  type BulkTrackerStatusResponse,
   type OdometerSetResponse,
   type TripReport,
   type StopReport,
@@ -372,6 +373,16 @@ export class TriperoClient {
   async getTrackerStatus(trackerId: string): Promise<TrackerStatusResponse> {
     this.ensureHttpClient();
     return this.httpClient!.getTrackerStatus(trackerId);
+  }
+
+  /**
+   * Obtiene el estado actual de múltiples trackers en una sola request
+   * Requiere configuración http
+   * @param trackerIds Array de IDs de trackers
+   */
+  async getBulkTrackerStatus(trackerIds: string[]): Promise<BulkTrackerStatusResponse> {
+    this.ensureHttpClient();
+    return this.httpClient!.getBulkTrackerStatus(trackerIds);
   }
 
   /**

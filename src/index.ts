@@ -19,6 +19,7 @@ export {
 export {
   TriperoHttpClient,
   type TrackerStatusResponse,
+  type BulkTrackerStatusResponse,
   type OdometerSetResponse,
   type TripReport,
   type StopReport,

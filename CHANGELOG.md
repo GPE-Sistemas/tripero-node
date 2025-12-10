@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Bulk Status API** - New `getBulkTrackerStatus()` method
+  - Fetch status of multiple trackers in a single HTTP request
+  - Returns array of tracker statuses with individual error handling
+  - Optimized for dashboard and fleet views
+
 ## [0.3.0] - 2024-12-01
 
 ### Added
