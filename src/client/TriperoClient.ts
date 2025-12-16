@@ -376,16 +376,6 @@ export class TriperoClient {
   }
 
   /**
-   * Obtiene el estado actual de múltiples trackers en una sola request
-   * Requiere configuración http
-   * @param trackerIds Array de IDs de trackers
-   */
-  async getBulkTrackerStatus(trackerIds: string[]): Promise<BulkTrackerStatusResponse> {
-    this.ensureHttpClient();
-    return this.httpClient!.getBulkTrackerStatus(trackerIds);
-  }
-
-  /**
    * Configura el odómetro inicial de un tracker
    * Requiere configuración http
    * @param trackerId ID del tracker

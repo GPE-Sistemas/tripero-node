@@ -192,14 +192,6 @@ export class TriperoHttpClient {
   }
 
   /**
-   * Obtiene el estado actual de múltiples trackers en una sola request
-   */
-  async getBulkTrackerStatus(trackerIds: string[]): Promise<BulkTrackerStatusResponse> {
-    const url = `${this.baseUrl}/trackers/status/bulk`;
-    return this.request<BulkTrackerStatusResponse>('POST', url, { trackerIds });
-  }
-
-  /**
    * Configura el odómetro inicial de un tracker
    */
   async setOdometer(
