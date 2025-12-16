@@ -41,7 +41,6 @@ import { DEFAULTS, INPUT_CHANNELS } from './constants';
 import {
   TriperoHttpClient,
   type TrackerStatusResponse,
-  type BulkTrackerStatusResponse,
   type OdometerSetResponse,
   type TripReport,
   type StopReport,

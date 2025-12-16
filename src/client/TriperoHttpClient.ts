@@ -81,18 +81,6 @@ export interface TrackerStatusResponse {
 }
 
 /**
- * Respuesta de status de múltiples trackers (bulk)
- */
-export interface BulkTrackerStatusResponse {
-  success: boolean;
-  data: Array<TrackerStatusResponse['data'] & { trackerId: string }>;
-  errors?: Array<{
-    trackerId: string;
-    error: string;
-  }>;
-}
-
-/**
  * Respuesta de configuración de odómetro
  */
 export interface OdometerSetResponse {

@@ -4,7 +4,6 @@ export { INPUT_CHANNELS, OUTPUT_CHANNELS, ALL_OUTPUT_CHANNELS, DEFAULTS } from '
 export {
   TriperoHttpClient,
   type TrackerStatusResponse,
-  type BulkTrackerStatusResponse,
   type OdometerSetResponse,
   type TripReport,
   type StopReport,
