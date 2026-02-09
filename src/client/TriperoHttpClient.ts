@@ -1,5 +1,5 @@
-import type { TriperoHttpOptions, TriperoLogger } from '../interfaces';
-import { DEFAULTS } from './constants';
+import type { TriperoHttpOptions, TriperoLogger } from "../interfaces";
+import { DEFAULTS } from "./constants";
 
 /**
  * Respuesta de status de un tracker
@@ -16,7 +16,7 @@ export interface TrackerStatusResponse {
       currentTripKm?: number;
     };
     currentState: {
-      state: 'STOPPED' | 'IDLE' | 'MOVING';
+      state: "STOPPED" | "IDLE" | "MOVING";
       since: string;
       duration: number;
     };
@@ -53,7 +53,7 @@ export interface TrackerStatusResponse {
       daysActive: number;
     };
     health: {
-      status: 'online' | 'offline' | 'stale';
+      status: "online" | "offline" | "stale";
       lastSeenAgo: number;
     };
     /**
@@ -67,7 +67,7 @@ export interface TrackerStatusResponse {
        * - 'switched': Conectado a ACC/contacto (pierde energía al apagar)
        * - 'unknown': Sin datos suficientes para determinar
        */
-      powerType: 'permanent' | 'switched' | 'unknown';
+      powerType: "permanent" | "switched" | "unknown";
       /** Cantidad de gaps nocturnos (>2h) detectados */
       overnightGapCount: number;
       /** Fecha del último gap nocturno detectado */
@@ -143,9 +143,10 @@ export interface StopReport {
  * Opciones para consulta de reportes
  */
 export interface ReportQueryOptions {
-  deviceId: string | string[] | 'all';
+  deviceId: string | string[] | "all";
   from: Date | string;
   to: Date | string;
+  limit?: string;
   tenantId?: string;
   clientId?: string;
   fleetId?: string;
@@ -162,10 +163,10 @@ export class TriperoHttpClient {
   private readonly logger: TriperoLogger;
 
   constructor(options: TriperoHttpOptions, logger: TriperoLogger) {
-    this.baseUrl = options.baseUrl.replace(/\/$/, ''); // Remove trailing slash
+    this.baseUrl = options.baseUrl.replace(/\/$/, ""); // Remove trailing slash
     this.timeout = options.timeout ?? DEFAULTS.HTTP_TIMEOUT;
     this.headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...options.headers,
     };
     this.logger = logger;
@@ -176,7 +177,7 @@ export class TriperoHttpClient {
    */
   async getTrackerStatus(trackerId: string): Promise<TrackerStatusResponse> {
     const url = `${this.baseUrl}/trackers/${encodeURIComponent(trackerId)}/status`;
-    return this.request<TrackerStatusResponse>('GET', url);
+    return this.request<TrackerStatusResponse>("GET", url);
   }
 
   /**
@@ -188,9 +189,9 @@ export class TriperoHttpClient {
     reason?: string,
   ): Promise<OdometerSetResponse> {
     const url = `${this.baseUrl}/trackers/${encodeURIComponent(trackerId)}/odometer`;
-    return this.request<OdometerSetResponse>('POST', url, {
+    return this.request<OdometerSetResponse>("POST", url, {
       initialOdometer,
-      reason: reason ?? 'sdk_set',
+      reason: reason ?? "sdk_set",
     });
   }
 
@@ -200,7 +201,7 @@ export class TriperoHttpClient {
   async getTrips(options: ReportQueryOptions): Promise<TripReport[]> {
     const params = this.buildReportParams(options);
     const url = `${this.baseUrl}/api/reports/trips?${params}`;
-    return this.request<TripReport[]>('GET', url);
+    return this.request<TripReport[]>("GET", url);
   }
 
   /**
@@ -209,7 +210,7 @@ export class TriperoHttpClient {
   async getStops(options: ReportQueryOptions): Promise<StopReport[]> {
     const params = this.buildReportParams(options);
     const url = `${this.baseUrl}/api/reports/stops?${params}`;
-    return this.request<StopReport[]>('GET', url);
+    return this.request<StopReport[]>("GET", url);
   }
 
   /**
@@ -221,7 +222,7 @@ export class TriperoHttpClient {
     services: Record<string, { status: string }>;
   }> {
     const url = `${this.baseUrl}/health`;
-    return this.request('GET', url);
+    return this.request("GET", url);
   }
 
   private buildReportParams(options: ReportQueryOptions): string {
@@ -229,27 +230,26 @@ export class TriperoHttpClient {
 
     // Device ID(s)
     if (Array.isArray(options.deviceId)) {
-      params.set('deviceId', options.deviceId.join(','));
+      params.set("deviceId", options.deviceId.join(","));
     } else {
-      params.set('deviceId', options.deviceId);
+      params.set("deviceId", options.deviceId);
     }
 
     // Date range
     const from =
-      options.from instanceof Date
-        ? options.from.toISOString()
-        : options.from;
+      options.from instanceof Date ? options.from.toISOString() : options.from;
     const to =
       options.to instanceof Date ? options.to.toISOString() : options.to;
-    params.set('from', from);
-    params.set('to', to);
+    params.set("from", from);
+    params.set("to", to);
 
     // Optional filters
-    if (options.tenantId) params.set('tenantId', options.tenantId);
-    if (options.clientId) params.set('clientId', options.clientId);
-    if (options.fleetId) params.set('fleetId', options.fleetId);
+    if (options.tenantId) params.set("tenantId", options.tenantId);
+    if (options.clientId) params.set("clientId", options.clientId);
+    if (options.fleetId) params.set("fleetId", options.fleetId);
+    if (options.limit) params.set("limit", options.limit);
     if (options.metadata) {
-      params.set('metadata', JSON.stringify(options.metadata));
+      params.set("metadata", JSON.stringify(options.metadata));
     }
 
     return params.toString();
@@ -283,7 +283,7 @@ export class TriperoHttpClient {
       const data = (await response.json()) as T;
       return data;
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && error.name === "AbortError") {
         throw new Error(`Request timeout after ${this.timeout}ms`);
       }
       this.logger.error(`HTTP error: ${method} ${url}`, error);
