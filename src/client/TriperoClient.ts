@@ -108,8 +108,7 @@ export class TriperoClient {
         enableRetry: options.options?.enableRetry ?? DEFAULTS.ENABLE_RETRY,
         enableOfflineQueue:
           options.options?.enableOfflineQueue ?? DEFAULTS.ENABLE_OFFLINE_QUEUE,
-        throwOnError:
-          options.options?.throwOnError ?? DEFAULTS.THROW_ON_ERROR,
+        throwOnError: options.options?.throwOnError ?? DEFAULTS.THROW_ON_ERROR,
         logLevel: options.options?.logLevel ?? DEFAULTS.LOG_LEVEL,
         maxRetriesPerRequest:
           options.options?.maxRetriesPerRequest ??
@@ -340,7 +339,9 @@ export class TriperoClient {
     await this.subscriber.subscribe(...prefixedChannels);
 
     this.isSubscribed = true;
-    this.logger.info(`Suscrito a ${channels.length} canales: ${channels.join(', ')}`);
+    this.logger.info(
+      `Suscrito a ${channels.length} canales: ${channels.join(', ')}`,
+    );
   }
 
   /**

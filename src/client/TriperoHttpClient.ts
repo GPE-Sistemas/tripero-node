@@ -146,6 +146,7 @@ export interface ReportQueryOptions {
   deviceId: string | string[] | 'all';
   from: Date | string;
   to: Date | string;
+  limit?: string;
   tenantId?: string;
   clientId?: string;
   fleetId?: string;
@@ -236,9 +237,7 @@ export class TriperoHttpClient {
 
     // Date range
     const from =
-      options.from instanceof Date
-        ? options.from.toISOString()
-        : options.from;
+      options.from instanceof Date ? options.from.toISOString() : options.from;
     const to =
       options.to instanceof Date ? options.to.toISOString() : options.to;
     params.set('from', from);
@@ -248,6 +247,7 @@ export class TriperoHttpClient {
     if (options.tenantId) params.set('tenantId', options.tenantId);
     if (options.clientId) params.set('clientId', options.clientId);
     if (options.fleetId) params.set('fleetId', options.fleetId);
+    if (options.limit) params.set('limit', options.limit);
     if (options.metadata) {
       params.set('metadata', JSON.stringify(options.metadata));
     }
